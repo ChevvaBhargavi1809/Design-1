@@ -1,27 +1,52 @@
-// Time Complexity : add and remove mehtods have amortized time:O(1), contains takes O(n)
+// Time Complexity : all methods have amortized time:O(1),
 // Space Complexity : O(n) for n elements in the hashset
 // Did this code successfully run on Leetcode : Yes
-// Any problem you faced while coding this : How can I make search in O(1)
-// Approach: Internally using an arraylist to store elements
-import java.util.*;
+// Any problem you faced while coding this : 
+// Approach: Internally using double hashing
 class MyHashSet {
-    ArrayList<Integer> set;
+    boolean data[][];
+    int buckets, bucketItems;
     public MyHashSet() {
-        set = new ArrayList<Integer>();
+        buckets = 1000;
+        bucketItems = 1000;
+        data = new boolean[buckets][];
+    }
+    int hashFunction1(int key){
+        return key%1000;
+    }
+    int hashFunction2(int key){
+        return key/1000;
     }
     
     public void add(int key) {
-        if(!set.contains(key))
-            set.add(key);
+        int i1 = hashFunction1(key);
+        if(data[i1] == null){
+            if(i1 == 0){
+                data[i1] = new boolean[bucketItems + 1];
+            }
+            else
+                data[i1] = new boolean[bucketItems];
+        }
+        int i2 = hashFunction2(key);
+        data[i1][i2] = true;
     }
     
     public void remove(int key) {
-        if(set.contains(key))
-            set.remove(set.indexOf(key));
+        int i1 = hashFunction1(key);
+        int i2 = hashFunction2(key);
+        if(data[i1] == null){
+            return;
+        }
+        data[i1][i2] = false;
     }
     
     public boolean contains(int key) {
-        return set.contains(key);
+        int i1 = hashFunction1(key);
+        int i2 = hashFunction2(key);
+        if(data[i1] == null){
+            return false;
+        }
+        return data[i1][i2];
     }
 }
 
